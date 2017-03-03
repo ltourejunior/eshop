@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\Request;
 Use DB as DB;
+use phpDocumentor\Reflection\DocBlock\Tags\Return_;
 
 class HomeController extends Controller
 {
@@ -50,23 +51,25 @@ class HomeController extends Controller
 
     public function sub_categories($id)
     {
-        $hasproducts = \App\Product::find($id)->hasproducts;
-       foreach ($hasproducts as $hasproduct) {
+        $products = \App\Category::find($id)->products;
 
-           $products = \App\Product::where('id',$hasproduct->product_id )->get();
-           $sub_category = view('category/sub_categories');
-           $sub_category->products= $products;
-           echo $sub_category;
-           //echo $products;
-       }
-       // dd($hasproduct);
+            $sub_category = view('category.sub_categories',  compact(['products']));
 
-       //dd($hascat);
-       //$products = \App\Product::where('id',$hascat )->get();
-//($products);
-       // $sub_category = view('category/sub_categories');
-       // $sub_category->products= $products;
+            return $sub_category;
+    }
 
-       // return $sub_category;
+    public function checkout()
+    {
+
+        $orderid =request()->input('id', null);
+        $orderprice =request()->input('price', null);
+
+
+        $checkoutid = DB::table('checkout')->insertGetId([
+            'product_id' => $orderid,
+            'price' =>$orderprice,
+            'date' => date('Y-m-d H:i:s')
+        ]);
+        return redirect(action("{{action('HomeController@checkout')}}"));
     }
 }

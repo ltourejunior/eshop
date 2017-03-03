@@ -12,5 +12,8 @@ Route::get('/sub_categories/{id?}', 'HomeController@sub_categories')
 Route::get('/product/{id?}', 'HomeController@product')
     ->name('product')
     ->where('id', '[0-9]+');
+Route::get('/checkout/{id?}', 'HomeController@checkout')
+    ->name('checkout')
+    ->where('id', '[0-9]+');
 
 
