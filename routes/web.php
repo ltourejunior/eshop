@@ -15,5 +15,8 @@ Route::get('/product/{id?}', 'HomeController@product')
 Route::get('/checkout/{id?}', 'HomeController@checkout')
     ->name('checkout')
     ->where('id', '[0-9]+');
+Route::post('/checkout/{id?}', 'HomeController@checkout')
+    ->name('checkout')
+    ->where('id', '[0-9]+');
 
 

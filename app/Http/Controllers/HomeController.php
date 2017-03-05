@@ -30,9 +30,14 @@ class HomeController extends Controller
     }
 
     //Category page
-    public function category($id)
+    public function category($id=null)
     {
-        $sub_categories= \App\Category::where('parent_id', $id)->get();
+        if($id == null){
+            $sub_categories= \App\Category::All();
+        } else {
+            $sub_categories= \App\Category::where('parent_id', $id)->get();
+        }
+
         $category= view('category');
         $category->sub_categories = $sub_categories;
         return $category;
@@ -40,12 +45,18 @@ class HomeController extends Controller
     }
 
     //Product page
-    public function product($id)
+    public function product($id=null)
     {
-        $product_detail = \App\Product::find($id);
+        if($id == null){
+            $product_details = \App\Product::all();
+
+        } else {
+            $product_details = \App\Product::find($id);
+        }
+
 
         $product = view('product/product');
-        $product->product_details = $product_detail;
+        $product->product_details = $product_details;
         return $product;
     }
 
@@ -61,15 +72,18 @@ class HomeController extends Controller
     public function checkout()
     {
 
-        $orderid =request()->input('id', null);
+        $orderid =request()->input('product_id', null);
         $orderprice =request()->input('price', null);
 
 
-        $checkoutid = DB::table('checkout')->insertGetId([
+        $checkoutid = DB::table('checkouts')->insertGetId([
             'product_id' => $orderid,
             'price' =>$orderprice,
             'date' => date('Y-m-d H:i:s')
         ]);
-        return redirect(action("{{action('HomeController@checkout')}}"));
+        $ordered= \App\Product::find($orderid);
+
+        $checkout = view('checkout', compact(['ordered']));
+        return $checkout;
     }
 }
